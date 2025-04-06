@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch("https://fantasy.premierleague.com/api/bootstrap-static/");
+      const res = await fetch("/api/bootstrap-static");
       const data = await res.json();
       setPlayers(data.elements);
 
@@ -95,7 +95,7 @@ function App() {
   const handlePlayerClick = async (player) => {
     setSelectedPlayer(player);
     if (!playerDetailData[player.id]) {
-      const res = await fetch(`https://fantasy.premierleague.com/api/element-summary/${player.id}/`);
+      const res = await fetch(`/api/element-summary?id=${player.id}`);
       const detail = await res.json();
       setPlayerDetailData(prev => ({ ...prev, [player.id]: detail }));
     }
