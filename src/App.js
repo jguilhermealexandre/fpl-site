@@ -16,6 +16,9 @@ function getTrendData(data, key) {
   const slope = numerator / denominator;
   const intercept = yAvg - slope * xAvg;
 
+  const [comparedPlayers, setComparedPlayers] = useState([]);
+  const [comparisonData, setComparisonData] = useState({});
+
   return data.map((d, i) => ({
     round: d.round,
     [`${key}_trend`]: slope * i + intercept
@@ -267,7 +270,7 @@ selectedMetrics.forEach((metric) => {
 });
 
     {/* ✅ CHART HERE */}
-    <LineChart width={700} height={250} data={playerDetailData[selectedPlayer.id].history}>
+    <LineChart width={700} height={250} data={combinedData}>
       <XAxis dataKey="round" label={{ value: "GW", position: "insideBottomRight", offset: -5 }} />
       <YAxis label={{ value: "Metric", angle: -90, position: "insideLeft" }} />
       <Tooltip />
@@ -284,6 +287,16 @@ selectedMetrics.forEach((metric) => {
           />
         );
       })}
+      {selectedMetrics.map((metricKey) => (
+  <Line
+    key={`${metricKey}_trend`}
+    type="monotone"
+    dataKey={`${metricKey}_trend`}
+    stroke="#888"
+    strokeDasharray="5 5"
+    dot={false}
+  />
+))}
     </LineChart>
   </div>
 )}
