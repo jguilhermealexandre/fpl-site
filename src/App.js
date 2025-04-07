@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
 
 function App() {
   const [players, setPlayers] = useState([]);
@@ -203,6 +204,19 @@ function App() {
       {selectedPlayer && (
         <div style={{ marginTop: "2rem" }}>
           <button onClick={() => setSelectedPlayer(null)} style={{ marginBottom: "1rem" }}>⬅ Back to All Players</button>
+          {playerDetailData[selectedPlayer.id]?.history && (
+  <div style={{ marginBottom: "2rem" }}>
+    <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
+      Gameweek Points Chart
+    </h3>
+    <LineChart width={700} height={250} data={playerDetailData[selectedPlayer.id].history}>
+      <XAxis dataKey="round" label={{ value: "GW", position: "insideBottomRight", offset: -5 }} />
+      <YAxis label={{ value: "Points", angle: -90, position: "insideLeft" }} />
+      <Tooltip />
+      <Line type="monotone" dataKey="total_points" stroke="#8884d8" strokeWidth={2} />
+    </LineChart>
+  </div>
+)}
           <h2 style={{ fontSize: "1.5rem" }}>{selectedPlayer.first_name} {selectedPlayer.second_name}</h2>
           <p>Detailed stats for this player:</p>
           <div style={{ overflowX: "auto" }}>
