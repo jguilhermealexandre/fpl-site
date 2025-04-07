@@ -207,9 +207,7 @@ function App() {
           <button onClick={() => setSelectedPlayer(null)} style={{ marginBottom: "1rem" }}>⬅ Back to All Players</button>
           {playerDetailData[selectedPlayer.id]?.history && (
   <div style={{ marginBottom: "2rem" }}>
-    <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
-      Gameweek Points Chart
-    </h3>
+
     {playerDetailData[selectedPlayer.id]?.history && (
   <div style={{ marginBottom: "2rem" }}>
     <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
