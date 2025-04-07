@@ -11,6 +11,7 @@ function App() {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [playerDetailData, setPlayerDetailData] = useState({});
+  const [selectedMetrics, setSelectedMetrics] = useState(["total_points"]);
 
   useEffect(() => {
     async function fetchData() {
@@ -209,6 +210,54 @@ function App() {
     <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
       Gameweek Points Chart
     </h3>
+    {playerDetailData[selectedPlayer.id]?.history && (
+  <div style={{ marginBottom: "2rem" }}>
+    <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
+      Gameweek Stats Chart
+    </h3>
+
+    {/* ✅ CHECKBOXES HERE */}
+    <div style={{ marginBottom: "1rem", display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+      {chartMetrics.map(({ key, label }) => (
+        <label key={key}>
+          <input
+            type="checkbox"
+            checked={selectedMetrics.includes(key)}
+            onChange={(e) => {
+              setSelectedMetrics((prev) =>
+                e.target.checked
+                  ? [...prev, key]
+                  : prev.filter((m) => m !== key)
+              );
+            }}
+          />
+          {label}
+        </label>
+      ))}
+    </div>
+
+    {/* ✅ CHART HERE */}
+    <LineChart width={700} height={250} data={playerDetailData[selectedPlayer.id].history}>
+      <XAxis dataKey="round" label={{ value: "GW", position: "insideBottomRight", offset: -5 }} />
+      <YAxis label={{ value: "Metric", angle: -90, position: "insideLeft" }} />
+      <Tooltip />
+      {selectedMetrics.map((metricKey) => {
+        const metricInfo = chartMetrics.find(m => m.key === metricKey);
+        return (
+          <Line
+            key={metricKey}
+            type="monotone"
+            dataKey={metricKey}
+            strokeWidth={2}
+            stroke={"#" + Math.floor(Math.random()*16777215).toString(16)} // random color
+            dot={false}
+          />
+        );
+      })}
+    </LineChart>
+  </div>
+)}
+
     <LineChart width={700} height={250} data={playerDetailData[selectedPlayer.id].history}>
       <XAxis dataKey="round" label={{ value: "GW", position: "insideBottomRight", offset: -5 }} />
       <YAxis label={{ value: "Points", angle: -90, position: "insideLeft" }} />
@@ -288,6 +337,20 @@ const thStyle = {
   borderBottom: "2px solid #ccc",
   whiteSpace: "nowrap"
 };
+
+const chartMetrics = [
+  { key: "total_points", label: "Points" },
+  { key: "goals_scored", label: "Goals" },
+  { key: "assists", label: "Assists" },
+  { key: "bonus", label: "Bonus" },
+  { key: "creativity", label: "Creativity" },
+  { key: "threat", label: "Threat" },
+  { key: "expected_goals", label: "xG" },
+  { key: "expected_assists", label: "xA" },
+  { key: "expected_goal_involvements", label: "xGI" },
+  { key: "expected_goals_conceded", label: "xGC" },
+  { key: "value", label: "Value (£)", transform: (v) => v / 10 }
+];
 
 const tdStyle = {
   padding: "8px",
