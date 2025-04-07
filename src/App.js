@@ -258,12 +258,6 @@ function App() {
   </div>
 )}
 
-    <LineChart width={700} height={250} data={playerDetailData[selectedPlayer.id].history}>
-      <XAxis dataKey="round" label={{ value: "GW", position: "insideBottomRight", offset: -5 }} />
-      <YAxis label={{ value: "Points", angle: -90, position: "insideLeft" }} />
-      <Tooltip />
-      <Line type="monotone" dataKey="total_points" stroke="#8884d8" strokeWidth={2} />
-    </LineChart>
   </div>
 )}
           <h2 style={{ fontSize: "1.5rem" }}>{selectedPlayer.first_name} {selectedPlayer.second_name}</h2>
