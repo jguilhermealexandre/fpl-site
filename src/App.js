@@ -1,6 +1,27 @@
 import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
 
+function getTrendData(data, key) {
+  const n = data.length;
+  if (n < 2) return data;
+
+  const xSum = data.reduce((sum, d, i) => sum + i, 0);
+  const ySum = data.reduce((sum, d) => sum + (parseFloat(d[key]) || 0), 0);
+  const xAvg = xSum / n;
+  const yAvg = ySum / n;
+
+  const numerator = data.reduce((sum, d, i) => sum + (i - xAvg) * ((parseFloat(d[key]) || 0) - yAvg), 0);
+  const denominator = data.reduce((sum, d, i) => sum + Math.pow(i - xAvg, 2), 0);
+
+  const slope = numerator / denominator;
+  const intercept = yAvg - slope * xAvg;
+
+  return data.map((d, i) => ({
+    round: d.round,
+    [`${key}_trend`]: slope * i + intercept
+  }));
+}
+
 function App() {
   const [players, setPlayers] = useState([]);
   const [teams, setTeams] = useState({});
@@ -233,6 +254,17 @@ function App() {
         </label>
       ))}
     </div>
+
+const rawHistory = playerDetailData[selectedPlayer.id]?.history || [];
+
+let combinedData = [...rawHistory];
+
+selectedMetrics.forEach((metric) => {
+  const trend = getTrendData(rawHistory, metric);
+  trend.forEach((point, idx) => {
+    combinedData[idx] = { ...combinedData[idx], ...point };
+  });
+});
 
     {/* ✅ CHART HERE */}
     <LineChart width={700} height={250} data={playerDetailData[selectedPlayer.id].history}>
